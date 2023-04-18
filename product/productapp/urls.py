@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 # from productapp import views 
 from . import views 
-from .views import ArticleApiView, ArticleDetail
+from .views import ArticleApiView, ArticleDetail, Task
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('hello/',views.members,name="members"),
@@ -27,5 +27,6 @@ urlpatterns = [
     path('article_op_rest_api/<int:id>/',views.article_op_rest_api, name="article_op_rest_api"),
     path('article_api_view/',ArticleApiView.as_view(), name="articleapiview"),
     path('article_detail/<int:id>/',ArticleDetail.as_view(), name="articledetail"),
+    path('task/<int:id>/',Task.as_view(), name="task"),
 
 ]

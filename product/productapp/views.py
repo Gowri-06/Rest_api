@@ -8,6 +8,9 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authentication import BasicAuthentication,SessionAuthentication,TokenAuthentication 
+from rest_framework.permissions import IsAuthenticated
+from django.views import View
 
 
 def members(request):
@@ -19,48 +22,48 @@ def members(request):
     return HttpResponse("Hello world!")
 
 
-# @csrf_exempt
-# def article(request):
-#     if request.method == "POST":
-#         print(request)
-#         # print(request.data)
-#         data = JSONParser().parse(request)
-#         print("data__check",data)
-#         serialzer = ArticleSerializer(data=data)
-#         print("serialzer",serialzer)
-#         if serialzer.is_valid():
-#            serialzer.save()
-#            return JsonResponse(serialzer.data,status = 201)
-#         return JsonResponse(serialzer.errors,status = 400)
-#     elif request.method == "GET":
-#             article_obj = Article.objects.all()
-#             serialzer = ArticleSerializer(article_obj,many=True)
-#             return JsonResponse(serialzer.data,safe=False) 
+@csrf_exempt
+def article(request):
+    if request.method == "POST":
+        print(request)
+        # print(request.data)
+        data = JSONParser().parse(request)
+        print("data__check",data)
+        serialzer = ArticleSerializer(data=data)
+        print("serialzer",serialzer)
+        if serialzer.is_valid():
+           serialzer.save()
+           return JsonResponse(serialzer.data,status = 201)
+        return JsonResponse(serialzer.errors,status = 400)
+    elif request.method == "GET":
+            article_obj = Article.objects.all()
+            serialzer = ArticleSerializer(article_obj,many=True)
+            return JsonResponse(serialzer.data,safe=False) 
 
-# @csrf_exempt
-# def article_op(request,id):
-#     try:
-#         article_obj = Article.objects.get(id=id)
-#         print(article_obj)
-#     except Article.DoesNotExist:
-#         return HttpResponse(status=404)
+@csrf_exempt
+def article_op(request,id):
+    try:
+        article_obj = Article.objects.get(id=id)
+        print(article_obj)
+    except Article.DoesNotExist:
+        return HttpResponse(status=404)
     
-#     if request.method == "GET":
-#         serializer  = ArticleSerializer(article_obj)
-#         return JsonResponse(serializer.data)
+    if request.method == "GET":
+        serializer  = ArticleSerializer(article_obj)
+        return JsonResponse(serializer.data)
     
-#     elif request.method == "PUT":
-#         data = JSONParser().parse(request)
-#         serializer = ArticleSerializer(article_obj,data=data)
-#         print(serializer)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data,status = 201)
-#         return JsonResponse(serializer.errors,status = 401)
+    elif request.method == "PUT":
+        data = JSONParser().parse(request)
+        serializer = ArticleSerializer(article_obj,data=data)
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data,status = 201)
+        return JsonResponse(serializer.errors,status = 401)
     
-#     elif request.method == "DELETE":
-#         article_obj.delete()
-#         return HttpResponse("deleted",status=204)
+    elif request.method == "DELETE":
+        article_obj.delete()
+        return HttpResponse("deleted",status=204)
 
 
 
@@ -118,6 +121,10 @@ def article_op_rest_api(request,id):
 
 
 class ArticleApiView(APIView):
+    #  authenticated_classes = [SessionAuthentication,BasicAuthentication]
+     authenticated_classes = [TokenAuthentication]
+     permission_classes = [IsAuthenticated]
+
      def get(self,request):
         ArticleObject = Article.objects.all()
         print(ArticleObject)
@@ -161,6 +168,16 @@ class ArticleDetail(APIView):
         art_obj = self.get_obj(request,id)
         art_obj.delete()
         return Response("deleted",status=status.HTTP_204_NO_CONTENT)
+
+class Task(View):
+    def get(self,request,id):
+        person  = Person.objects.get(id=id) 
+        print(person.name)
+        interest_of__person = person.interest.all()
+        print(interest_of__person)
+        for i in interest_of__person:
+            print(i)
+        return HttpResponse(interest_of__person)
 
 
 
