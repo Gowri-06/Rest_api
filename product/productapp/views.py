@@ -172,12 +172,49 @@ class ArticleDetail(APIView):
 class Task(View):
     def get(self,request,id):
         person  = Person.objects.get(id=id) 
-        print(person.name)
-        interest_of__person = person.interest.all()
-        print(interest_of__person)
-        for i in interest_of__person:
-            print(i)
-        return HttpResponse(interest_of__person)
+        print(person)
+        print("name",person.name)
+        interest_of_person = person.interest.all()
+        print("interest_of_person",interest_of_person)
+        address = person.personaddress
+        print("address",address)
+        print("address",address.city)
+        print("address",address.person)
+        print("address",address.street_address)
+        for i in interest_of_person:
+            print("i>>>",i)
+        city = City.objects.get(id=id) 
+        print(city)
+        city_persons = city.personaddress_set.all() 
+        print("city_persons",city_persons) 
+        for j in city_persons:
+            print("j>>>",j.person) 
+            print("j>>>",j.street_address) 
+            print("j>>>",j.city) 
+        interest = Interest.objects.get(id=id)
+        print(interest)
+        interest_similar = interest.person_set.all()
+        print("interest_similar",interest_similar)
+        main_list = []
+        for k in interest_similar:
+            print("interest_similar",k.name)
+            print("interest_similar",k.mobile)
+            print("interest_similar",k.interest.all())
+            b =  [d for d in k.interest.all()]
+            print("b",b)
+            c = [ k.name]
+            f = [k.mobile]
+            print("f",f)
+            print("c",c)
+            e = c + f + b
+            print("eeeeeeeee",e)
+            main_list.append(e)
+        print("main_list",main_list) 
+        return HttpResponse("success")
+               
+               
+
+
 
 
 
