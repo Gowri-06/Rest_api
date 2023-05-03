@@ -11,6 +11,10 @@ from rest_framework import status
 from rest_framework.authentication import BasicAuthentication,SessionAuthentication,TokenAuthentication 
 from rest_framework.permissions import IsAuthenticated
 from django.views import View
+from rest_framework import generics 
+from rest_framework import mixins
+from rest_framework import viewsets
+from django.shortcuts import get_object_or_404 
 
 
 def members(request):
@@ -122,10 +126,10 @@ def article_op_rest_api(request,id):
 
 class ArticleApiView(APIView):
     #  authenticated_classes = [SessionAuthentication,BasicAuthentication]
-     authenticated_classes = [TokenAuthentication]
-     permission_classes = [IsAuthenticated]
+    #  authenticated_classes = [TokenAuthentication]
+    #  permission_classes = [IsAuthenticated]
 
-     def get(self,request):
+     def got(self,request):
         ArticleObject = Article.objects.all()
         print(ArticleObject)
         serializer = ArticleSerializer(ArticleObject,many = True)
@@ -211,8 +215,90 @@ class Task(View):
             main_list.append(e)
         print("main_list",main_list) 
         return HttpResponse("success")
-               
-               
+
+# class GenericAPIView(generics.GenericAPIView, mixins.ListModelMixin,mixins.CreateModelMixin,
+#                      mixins.UpdateModelMixin,mixins.RetrieveModelMixin,mixins.DestroyModelMixin):
+#     print("hhhhh")
+#     serializer_class = ArticleSerializer
+#     queryset = Article.objects.all()
+#     # lookup_field = "id"
+#     def get(self,request,pk):
+#         if pk:
+#             return self.retrieve(request,pk) 
+#         return self.list(request)
+#     def post(self,request):
+#         return self.create(request)
+#     def put(self,request,pk):
+#         return self.update(request,pk)
+#     def delete(self,request,pk):
+#         return self.destroy(request,pk)
+    
+# class ArticleViewSet(viewsets.ViewSet):
+#     def list(self,request):
+#         articles = Article.objects.all()
+#         serializer = ArticleSerializer(articles,many=True)
+#         return Response(serializer.data)
+#     def create(self,request):
+#         print("&&&&&&",request.data)
+#         serializer = ArticleSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data,status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+#     def retrieve(self,request,pk=None):
+#         print("retrieve method")
+#         queryset = Article.objects.all()
+#         article = get_object_or_404(queryset,pk=pk)
+#         print(article.title)
+#         print(article.author)
+#         print(article.email)
+#         serializer = ArticleSerializer(article)
+#         return Response(serializer.data) 
+#     def update(self,request,pk=None):
+#         queryset = Article.objects.all()
+#         article = get_object_or_404(queryset,pk=pk)
+#         print("llllllllllllll",article)
+#         serializer = ArticleSerializer(article,data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             print(serializer.save())
+#             return Response(serializer.data,status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+#     def destroy(self,request,pk=None):
+#         # article = Article.objects.get(id=pk)
+#         # article.delete()
+#         queryset = Article.objects.all()
+#         article1 = get_object_or_404(queryset,pk=pk)
+#         print(article1)
+#         article1.delete()
+#         return Response("DELETED")
+
+# class ArticleTwoViewSet(viewsets.GenericViewSet,mixins.ListModelMixin,mixins.CreateModelMixin,mixins.RetrieveModelMixin,mixins.UpdateModelMixin,
+#                         mixins.DestroyModelMixin):
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer
+
+
+class ArticleThreeViewSet(viewsets.ModelViewSet):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
 
 
 

@@ -8,8 +8,8 @@ class Article(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
 
-    def __str__(self):
-        return self.title
+    # def __str__(self):
+    #     return self.title
     
 class Interest(models.Model):
     interests = models.CharField(max_length=200)
